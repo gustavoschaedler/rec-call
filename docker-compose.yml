@@ -1,0 +1,13 @@
+services:
+  reccall:
+    build: .
+    container_name: reccall
+    ports:
+      - "5055:5055"
+    volumes:
+      - ./recordings:/app/recordings
+    environment:
+      - RECCALL_RECORDINGS_DIR=/app/recordings
+      - RECCALL_HOST=0.0.0.0
+      - RECCALL_PORT=5055
+    restart: unless-stopped
