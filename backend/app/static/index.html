@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RecCall</title>
-  <link rel="stylesheet" href="/styles.css?v=22" />
+  <link rel="stylesheet" href="/styles.css?v=23" />
 </head>
 <body>
   <main>
@@ -16,14 +16,15 @@
         </div>
         <div>
           <h1>RecCall <span class="version" id="appVersion"></span></h1>
-          <p>Record your microphone + meeting audio to a stereo WAV file.</p>
+          <p data-i18n="subtitle">Record your microphone + meeting audio to a stereo WAV file.</p>
         </div>
       </div>
       <div class="headerActions">
-        <button id="settingsBtn" class="iconBtn" title="Devices &amp; sound quality" aria-label="Settings">
+        <button id="langToggle" class="iconBtn langBtn" data-i18n-title="langToggle" title="Language" aria-label="Language"></button>
+        <button id="settingsBtn" class="iconBtn" data-i18n-title="settingsTitle" data-i18n-aria="settings" title="Devices &amp; sound quality" aria-label="Settings">
           <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         </button>
-        <button id="themeToggle" class="iconBtn" title="Toggle light / dark" aria-label="Toggle theme">
+        <button id="themeToggle" class="iconBtn" data-i18n-title="themeToggle" data-i18n-aria="theme" title="Toggle light / dark" aria-label="Toggle theme">
           <svg class="icon iconSun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           <svg class="icon iconMoon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
         </button>
@@ -33,17 +34,17 @@
     <section class="card recorder">
       <div class="sectionHeader">
         <div class="recHead">
-          <h2>Recorder</h2>
+          <h2 data-i18n="recorder">Recorder</h2>
           <div class="recMetaChips" id="recMetaChips">
-            <span class="chip" title="Microphone">
+            <span class="chip" data-i18n-title="microphone" title="Microphone">
               <svg class="icon" viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
               <span id="chipMic">—</span>
             </span>
-            <span class="chip" title="Meeting audio">
+            <span class="chip" data-i18n-title="meetingAudio" title="Meeting audio">
               <svg class="icon" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
               <span id="chipMeeting">—</span>
             </span>
-            <span class="chip" title="Sound quality">
+            <span class="chip" data-i18n-title="soundQuality" title="Sound quality">
               <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h8M16 7h4M4 12h4M12 12h8M4 17h6M14 17h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="7" r="2" fill="currentColor"/><circle cx="10" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="17" r="2" fill="currentColor"/></svg>
               <span id="chipQuality">—</span>
             </span>
@@ -51,7 +52,7 @@
         </div>
         <div id="recIndicator" class="recIndicator idle">
           <span class="dot"></span>
-          <span id="recIndicatorText">Idle</span>
+          <span id="recIndicatorText" data-i18n="status_idle">Idle</span>
         </div>
       </div>
 
@@ -62,32 +63,32 @@
             <div class="statusIcon idle" id="statusIcon"></div>
             <div class="timer" id="timer">00:00:00</div>
           </div>
-          <div class="meta" id="recMeta">Ready to record</div>
+          <div class="meta" id="recMeta" data-i18n="readyToRecord">Ready to record</div>
         </div>
       </div>
 
       <div class="buttonRow" id="transportRow">
         <button id="startBtn" class="primary">
           <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg>
-          <span>Record</span>
+          <span data-i18n="record">Record</span>
         </button>
         <button id="pauseBtn" disabled>
           <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
-          <span>Pause</span>
+          <span data-i18n="pause">Pause</span>
         </button>
         <button id="resumeBtn" disabled>
           <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
-          <span>Resume</span>
+          <span data-i18n="resume">Resume</span>
         </button>
         <button id="stopBtn" disabled>
           <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
-          <span>Stop</span>
+          <span data-i18n="stop">Stop</span>
         </button>
       </div>
 
       <div class="playbackBar" id="playbackBar" hidden>
         <audio id="audioPlayer" controls preload="metadata"></audio>
-        <button id="closePlayer" class="iconAct" title="Close player" aria-label="Close player">
+        <button id="closePlayer" class="iconAct" data-i18n-title="closePlayer" data-i18n-aria="closePlayer" title="Close player" aria-label="Close player">
           <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -98,10 +99,10 @@
 
     <section class="card">
       <div class="sectionHeader">
-        <h2>Saved recordings</h2>
+        <h2 data-i18n="savedRecordings">Saved recordings</h2>
         <button id="refreshRecordings" class="ghost small">
           <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Refresh</span>
+          <span data-i18n="refresh">Refresh</span>
         </button>
       </div>
       <div class="tableWrap">
@@ -110,26 +111,26 @@
             <tr>
               <th class="idCol">#</th>
               <th class="playCol"></th>
-              <th>File</th>
-              <th>Length</th>
-              <th>Quality</th>
-              <th>Size</th>
-              <th>Modified</th>
-              <th class="actionsCol">Actions</th>
+              <th data-i18n="col_file">File</th>
+              <th data-i18n="col_length">Length</th>
+              <th data-i18n="col_quality">Quality</th>
+              <th data-i18n="col_size">Size</th>
+              <th data-i18n="col_modified">Modified</th>
+              <th class="actionsCol" data-i18n="col_actions">Actions</th>
             </tr>
           </thead>
           <tbody id="recordingsBody"></tbody>
         </table>
       </div>
-      <p id="emptyRecordings" class="empty" hidden>No recordings yet. Hit Record to create your first one.</p>
+      <p id="emptyRecordings" class="empty" data-i18n="emptyRecordings" hidden>No recordings yet. Hit Record to create your first one.</p>
       <div class="pagination" id="pagination" hidden>
         <button id="prevPage" class="ghost small">
           <svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Prev</span>
+          <span data-i18n="prev">Prev</span>
         </button>
         <span class="pageInfo" id="pageInfo"></span>
         <button id="nextPage" class="ghost small">
-          <span>Next</span>
+          <span data-i18n="next">Next</span>
           <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -138,36 +139,36 @@
 
   <dialog id="settingsDialog" class="modal settings">
     <div class="modalHead">
-      <h3>Settings</h3>
-      <button id="settingsClose" class="iconBtn small" aria-label="Close">
+      <h3 data-i18n="settings">Settings</h3>
+      <button id="settingsClose" class="iconBtn small" data-i18n-aria="close" aria-label="Close">
         <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
 
     <div class="settingsGroup">
-      <h4>Devices</h4>
+      <h4 data-i18n="devices">Devices</h4>
       <label>
-        Microphone
+        <span data-i18n="microphone">Microphone</span>
         <select id="micDevice"></select>
       </label>
       <label>
-        Meeting audio / BlackHole
+        <span data-i18n="meetingAudioLabel">Meeting audio / BlackHole</span>
         <select id="meetingDevice"></select>
       </label>
       <button id="refreshDevices" class="ghost small">
         <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Refresh devices</span>
+        <span data-i18n="refreshDevices">Refresh devices</span>
       </button>
-      <p class="hint">Use BlackHole 2ch as the meeting audio. The mic can be the macOS default, DJI Mic 2, AirPods or built-in mic.</p>
+      <p class="hint" data-i18n="devicesHint">Use BlackHole 2ch as the meeting audio. The mic can be the macOS default, DJI Mic 2, AirPods or built-in mic.</p>
     </div>
 
     <div class="settingsGroup">
-      <h4>Sound quality</h4>
+      <h4 data-i18n="soundQuality">Sound quality</h4>
       <div class="qualityGrid">
         <label>
-          Sample rate
+          <span data-i18n="sampleRate">Sample rate</span>
           <select id="sampleRate">
-            <option value="auto">Auto (recommended)</option>
+            <option value="auto" data-i18n="autoRecommended">Auto (recommended)</option>
             <option value="48000">48 kHz</option>
             <option value="44100">44.1 kHz</option>
             <option value="32000">32 kHz</option>
@@ -176,7 +177,7 @@
           </select>
         </label>
         <label>
-          Bit depth
+          <span data-i18n="bitDepth">Bit depth</span>
           <select id="bitDepth">
             <option value="PCM_16">16-bit PCM</option>
             <option value="PCM_24">24-bit PCM</option>
@@ -184,13 +185,13 @@
           </select>
         </label>
       </div>
-      <p class="hint">Higher quality means larger files. Auto picks the best rate both devices support.</p>
+      <p class="hint" data-i18n="qualityHint">Higher quality means larger files. Auto picks the best rate both devices support.</p>
     </div>
 
     <div class="settingsGroup">
-      <h4>Recordings list</h4>
+      <h4 data-i18n="recordingsList">Recordings list</h4>
       <label>
-        Items per page
+        <span data-i18n="itemsPerPage">Items per page</span>
         <select id="pageSize">
           <option value="5">5</option>
           <option value="10">10</option>
@@ -201,23 +202,23 @@
     </div>
 
     <div class="modalButtons">
-      <button id="settingsDone" class="primary" type="button"><span>Done</span></button>
+      <button id="settingsDone" class="primary" type="button"><span data-i18n="done">Done</span></button>
     </div>
   </dialog>
 
   <dialog id="confirmDialog" class="modal">
-    <h3>Delete recording</h3>
+    <h3 data-i18n="deleteRecording">Delete recording</h3>
     <p id="confirmText"></p>
-    <p class="modalNote">This permanently removes the file from disk and cannot be undone.</p>
+    <p class="modalNote" data-i18n="deleteNote">This permanently removes the file from disk and cannot be undone.</p>
     <div class="modalButtons">
-      <button id="confirmCancel" class="ghost" type="button"><span>Cancel</span></button>
+      <button id="confirmCancel" class="ghost" type="button"><span data-i18n="cancel">Cancel</span></button>
       <button id="confirmDelete" class="danger" type="button">
         <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Delete</span>
+        <span data-i18n="delete">Delete</span>
       </button>
     </div>
   </dialog>
 
-<script src="/app.js?v=22"></script>
+<script src="/app.js?v=23"></script>
 </body>
 </html>

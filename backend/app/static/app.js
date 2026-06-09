@@ -26,6 +26,7 @@ const confirmText = document.getElementById('confirmText');
 const confirmCancel = document.getElementById('confirmCancel');
 const confirmDelete = document.getElementById('confirmDelete');
 const themeToggle = document.getElementById('themeToggle');
+const langToggle = document.getElementById('langToggle');
 
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsDialog = document.getElementById('settingsDialog');
@@ -60,6 +61,96 @@ let pageSize = Math.max(1, Number(localStorage.getItem(PAGESIZE_KEY)) || 5);
 let recBands = null;
 let playAnalyser = null;
 let playBuf = null;
+
+/* ---------------- i18n (pt-BR / en-GB) ---------------- */
+
+const LANG_KEY = 'reccall-lang';
+const I18N = {
+  'pt-BR': {
+    subtitle: 'Grave seu microfone + áudio da reunião em um WAV estéreo.',
+    langToggle: 'Idioma', settingsTitle: 'Dispositivos e qualidade do som', settings: 'Configurações',
+    themeToggle: 'Alternar claro / escuro', theme: 'Alternar tema',
+    recorder: 'Gravador', microphone: 'Microfone', meetingAudio: 'Áudio da reunião',
+    meetingAudioLabel: 'Áudio da reunião / BlackHole', soundQuality: 'Qualidade do som',
+    status_idle: 'Ocioso', status_recording: 'Gravando', status_paused: 'Pausado', status_playing: 'Reproduzindo',
+    readyToRecord: 'Pronto para gravar', stereo: 'Estéreo', writing: 'Gravando:',
+    record: 'Gravar', pause: 'Pausar', resume: 'Continuar', stop: 'Parar',
+    play: 'Reproduzir', download: 'Baixar', delete: 'Excluir', closePlayer: 'Fechar player',
+    savedRecordings: 'Gravações salvas', refresh: 'Atualizar', refreshDevices: 'Atualizar dispositivos',
+    col_file: 'Arquivo', col_length: 'Duração', col_quality: 'Qualidade', col_size: 'Tamanho',
+    col_modified: 'Modificado', col_actions: 'Ações',
+    emptyRecordings: 'Nenhuma gravação ainda. Clique em Gravar para criar a primeira.',
+    prev: 'Anterior', next: 'Próxima', page: 'Página', of: 'de', recording: 'gravação', recordings: 'gravações',
+    devices: 'Dispositivos',
+    devicesHint: 'Use BlackHole 2ch como áudio da reunião. O microfone pode ser o padrão do macOS, DJI Mic 2, AirPods ou o microfone interno.',
+    sampleRate: 'Taxa de amostragem', bitDepth: 'Profundidade de bits', autoRecommended: 'Automática (recomendada)',
+    qualityHint: 'Maior qualidade significa arquivos maiores. Automática escolhe a melhor taxa suportada pelos dois dispositivos.',
+    recordingsList: 'Lista de gravações', itemsPerPage: 'Itens por página', done: 'Concluído', close: 'Fechar',
+    deleteRecording: 'Excluir gravação', deletePrompt: 'Excluir “{path}”?',
+    deleteNote: 'Isso remove o arquivo do disco permanentemente e não pode ser desfeito.', cancel: 'Cancelar',
+    selectMeeting: 'Selecione o dispositivo de áudio da reunião, normalmente BlackHole 2ch.',
+    macosDefaultInput: 'Entrada padrão do macOS', defaultInput: 'Entrada padrão',
+    defaultSuffix: ' (padrão)', recommendedSuffix: ' ← recomendado', auto: 'Auto',
+  },
+  'en-GB': {
+    subtitle: 'Record your microphone + meeting audio to a stereo WAV file.',
+    langToggle: 'Language', settingsTitle: 'Devices & sound quality', settings: 'Settings',
+    themeToggle: 'Toggle light / dark', theme: 'Toggle theme',
+    recorder: 'Recorder', microphone: 'Microphone', meetingAudio: 'Meeting audio',
+    meetingAudioLabel: 'Meeting audio / BlackHole', soundQuality: 'Sound quality',
+    status_idle: 'Idle', status_recording: 'Recording', status_paused: 'Paused', status_playing: 'Playing',
+    readyToRecord: 'Ready to record', stereo: 'Stereo', writing: 'Writing:',
+    record: 'Record', pause: 'Pause', resume: 'Resume', stop: 'Stop',
+    play: 'Play', download: 'Download', delete: 'Delete', closePlayer: 'Close player',
+    savedRecordings: 'Saved recordings', refresh: 'Refresh', refreshDevices: 'Refresh devices',
+    col_file: 'File', col_length: 'Length', col_quality: 'Quality', col_size: 'Size',
+    col_modified: 'Modified', col_actions: 'Actions',
+    emptyRecordings: 'No recordings yet. Hit Record to create your first one.',
+    prev: 'Prev', next: 'Next', page: 'Page', of: 'of', recording: 'recording', recordings: 'recordings',
+    devices: 'Devices',
+    devicesHint: 'Use BlackHole 2ch as the meeting audio. The mic can be the macOS default, DJI Mic 2, AirPods or built-in mic.',
+    sampleRate: 'Sample rate', bitDepth: 'Bit depth', autoRecommended: 'Auto (recommended)',
+    qualityHint: 'Higher quality means larger files. Auto picks the best rate both devices support.',
+    recordingsList: 'Recordings list', itemsPerPage: 'Items per page', done: 'Done', close: 'Close',
+    deleteRecording: 'Delete recording', deletePrompt: 'Delete “{path}”?',
+    deleteNote: 'This permanently removes the file from disk and cannot be undone.', cancel: 'Cancel',
+    selectMeeting: 'Select the meeting audio device, usually BlackHole 2ch.',
+    macosDefaultInput: 'macOS Default Input', defaultInput: 'Default Input',
+    defaultSuffix: ' (default)', recommendedSuffix: ' ← recommended', auto: 'Auto',
+  },
+};
+
+let lang = localStorage.getItem(LANG_KEY) ||
+  ((navigator.language || '').toLowerCase().startsWith('pt') ? 'pt-BR' : 'en-GB');
+if (!I18N[lang]) lang = 'en-GB';
+
+function t(key, vars) {
+  let s = I18N[lang][key] != null ? I18N[lang][key] : (I18N['en-GB'][key] != null ? I18N['en-GB'][key] : key);
+  if (vars) for (const k in vars) s = s.split('{' + k + '}').join(vars[k]);
+  return s;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = t(el.getAttribute('data-i18n-title')); });
+  document.querySelectorAll('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+  document.documentElement.lang = lang;
+}
+
+function setLang(l) {
+  lang = I18N[l] ? l : 'en-GB';
+  localStorage.setItem(LANG_KEY, lang);
+  langToggle.textContent = lang === 'pt-BR' ? 'PT' : 'EN';
+  applyTranslations();
+  relabelDeviceOptions();
+  updateRecChips();
+  renderRecordings();
+  updateRecorderUI();
+}
+
+langToggle.textContent = lang === 'pt-BR' ? 'PT' : 'EN';
+applyTranslations();
+langToggle.addEventListener('click', () => setLang(lang === 'pt-BR' ? 'en-GB' : 'pt-BR'));
 
 /* ---------------- Theme ---------------- */
 
@@ -312,14 +403,15 @@ async function loadDevices() {
   micSelect.innerHTML = '';
   const defaultOption = document.createElement('option');
   defaultOption.value = '';
-  defaultOption.textContent = 'macOS Default Input';
+  defaultOption.textContent = t('macosDefaultInput');
   micSelect.appendChild(defaultOption);
 
   for (const d of inputDevices) {
     const opt = document.createElement('option');
     opt.value = d.id;
     opt.dataset.name = d.name;
-    opt.textContent = `${d.name}${d.is_default_input ? ' (default)' : ''}`;
+    opt.dataset.default = d.is_default_input ? '1' : '0';
+    opt.textContent = `${d.name}${d.is_default_input ? t('defaultSuffix') : ''}`;
     micSelect.appendChild(opt);
   }
 
@@ -328,11 +420,24 @@ async function loadDevices() {
     const opt = document.createElement('option');
     opt.value = d.id;
     opt.dataset.name = d.name;
-    opt.textContent = `${d.name}${d.name.toLowerCase().includes('blackhole') ? ' ← recommended' : ''}`;
+    opt.textContent = `${d.name}${d.name.toLowerCase().includes('blackhole') ? t('recommendedSuffix') : ''}`;
     meetingSelect.appendChild(opt);
     if (d.name.toLowerCase().includes('blackhole')) meetingSelect.value = d.id;
   }
   updateRecChips();
+}
+
+// Re-translate the device option labels in place (on language switch), keeping
+// the current selection — no network refetch needed.
+function relabelDeviceOptions() {
+  for (const opt of micSelect.options) {
+    if (opt.value === '') { opt.textContent = t('macosDefaultInput'); continue; }
+    opt.textContent = `${opt.dataset.name}${opt.dataset.default === '1' ? t('defaultSuffix') : ''}`;
+  }
+  for (const opt of meetingSelect.options) {
+    const rec = opt.dataset.name && opt.dataset.name.toLowerCase().includes('blackhole');
+    opt.textContent = `${opt.dataset.name}${rec ? t('recommendedSuffix') : ''}`;
+  }
 }
 
 const RATE_LABEL = { auto: 'Auto', '48000': '48 kHz', '44100': '44.1 kHz', '32000': '32 kHz', '24000': '24 kHz', '16000': '16 kHz' };
@@ -343,10 +448,10 @@ function updateRecChips() {
   const micOpt = micSelect.options[micSelect.selectedIndex];
   const meetOpt = meetingSelect.options[meetingSelect.selectedIndex];
   document.getElementById('chipMic').textContent =
-    micSelect.value === '' ? 'Default Input' : (micOpt ? (micOpt.dataset.name || micOpt.textContent) : '—');
+    micSelect.value === '' ? t('defaultInput') : (micOpt ? (micOpt.dataset.name || micOpt.textContent) : '—');
   document.getElementById('chipMeeting').textContent =
     meetOpt ? (meetOpt.dataset.name || meetOpt.textContent) : '—';
-  const rate = RATE_LABEL[sampleRateSel.value] || sampleRateSel.value;
+  const rate = sampleRateSel.value === 'auto' ? t('auto') : (RATE_LABEL[sampleRateSel.value] || sampleRateSel.value);
   const depth = DEPTH_LABEL[bitDepthSel.value] || bitDepthSel.value;
   document.getElementById('chipQuality').textContent = `${rate} · ${depth}`;
 }
@@ -379,8 +484,8 @@ function updateRecorderUI() {
     transportRow.hidden = true;
     playbackBar.hidden = false;
     recIndicator.className = 'recIndicator playing';
-    recIndicatorText.textContent = 'Playing';
-    recMeta.textContent = currentPlayingName ? `Playing · ${currentPlayingName}` : 'Playing';
+    recIndicatorText.textContent = t('status_playing');
+    recMeta.textContent = currentPlayingName ? `${t('status_playing')} · ${currentPlayingName}` : t('status_playing');
     currentFile.textContent = '';
     applyStatusVisual();
     renderTimer();
@@ -404,15 +509,15 @@ function updateRecorderUI() {
   meetingSelect.disabled = active;
 
   recIndicator.className = `recIndicator ${state}`;
-  recIndicatorText.textContent = recording ? 'Recording' : paused ? 'Paused' : 'Idle';
+  recIndicatorText.textContent = recording ? t('status_recording') : paused ? t('status_paused') : t('status_idle');
 
   if (state === 'idle') {
-    recMeta.textContent = 'Ready to record';
+    recMeta.textContent = t('readyToRecord');
     currentFile.textContent = '';
   } else {
     const rate = s.sample_rate ? ` · ${(s.sample_rate / 1000).toFixed(s.sample_rate % 1000 ? 1 : 0)} kHz` : '';
-    recMeta.textContent = `Stereo · ${s.bit_depth || '16-bit'}${rate}`;
-    currentFile.textContent = s.file_path ? `Writing: ${s.file_path}` : '';
+    recMeta.textContent = `${t('stereo')} · ${s.bit_depth || '16-bit'}${rate}`;
+    currentFile.textContent = s.file_path ? `${t('writing')} ${s.file_path}` : '';
   }
   applyStatusVisual();
   renderTimer();
@@ -469,7 +574,7 @@ function renderRecordings() {
     tr.innerHTML = `
       <td class="idCol muted">${r.id != null ? '#' + r.id : ''}</td>
       <td class="playCol">
-        <button class="iconAct ${isCur ? 'active' : ''}" data-action="play" data-path="${safePath}" title="${showPause ? 'Pause' : 'Play'}" aria-label="${showPause ? 'Pause' : 'Play'}">${showPause ? ICON.pause : ICON.play}</button>
+        <button class="iconAct ${isCur ? 'active' : ''}" data-action="play" data-path="${safePath}" title="${showPause ? t('pause') : t('play')}" aria-label="${showPause ? t('pause') : t('play')}">${showPause ? ICON.pause : ICON.play}</button>
       </td>
       <td class="fileCell">${safePath}</td>
       <td class="mono">${formatClock(r.duration_seconds)}</td>
@@ -477,15 +582,15 @@ function renderRecordings() {
       <td>${formatBytes(r.size_bytes)}</td>
       <td class="modifiedCell">${formatModified(r.modified_at)}</td>
       <td class="rowActions">
-        <a class="iconAct btnLink" href="${recordingUrl(r.path)}" download title="Download" aria-label="Download">${ICON.download}</a>
-        <button class="iconAct danger" data-action="delete" data-path="${safePath}" title="Delete" aria-label="Delete">${ICON.trash}</button>
+        <a class="iconAct btnLink" href="${recordingUrl(r.path)}" download title="${t('download')}" aria-label="${t('download')}">${ICON.download}</a>
+        <button class="iconAct danger" data-action="delete" data-path="${safePath}" title="${t('delete')}" aria-label="${t('delete')}">${ICON.trash}</button>
       </td>
     `;
     recordingsBody.appendChild(tr);
   }
 
   pagination.hidden = total <= pageSize;
-  pageInfo.textContent = `Page ${currentPage} of ${pages} · ${total} recording${total === 1 ? '' : 's'}`;
+  pageInfo.textContent = `${t('page')} ${currentPage} ${t('of')} ${pages} · ${total} ${total === 1 ? t('recording') : t('recordings')}`;
   prevPageBtn.disabled = currentPage <= 1;
   nextPageBtn.disabled = currentPage >= pages;
 }
@@ -531,12 +636,12 @@ function refreshPlayButtons() {
     const isCur = !!currentPlayingPath && btn.dataset.path === currentPlayingPath;
     const showPause = isCur && playingNow;
     btn.innerHTML = showPause ? ICON.pause : ICON.play;
-    btn.title = showPause ? 'Pause' : 'Play';
-    btn.setAttribute('aria-label', showPause ? 'Pause' : 'Play');
+    btn.title = showPause ? t('pause') : t('play');
+    btn.setAttribute('aria-label', showPause ? t('pause') : t('play'));
     btn.classList.toggle('active', isCur);
   });
   if (isPlaying) {
-    recIndicatorText.textContent = playingNow ? 'Playing' : 'Paused';
+    recIndicatorText.textContent = playingNow ? t('status_playing') : t('status_paused');
     applyStatusVisual();
   }
 }
@@ -548,7 +653,7 @@ audioPlayer.addEventListener('ended', stopPlayback);
 
 function openDeleteDialog(path) {
   pendingDelete = { path };
-  confirmText.textContent = `Delete “${path}”?`;
+  confirmText.textContent = t('deletePrompt', { path });
   confirmDialog.showModal();
 }
 
@@ -575,7 +680,7 @@ async function startRecording() {
   if (isPlaying) stopPlayback();
   const micRaw = micSelect.value;
   const meetingRaw = meetingSelect.value;
-  if (!meetingRaw) throw new Error('Select the meeting audio device, usually BlackHole 2ch.');
+  if (!meetingRaw) throw new Error(t('selectMeeting'));
 
   const micOpt = micSelect.options[micSelect.selectedIndex];
   const meetingOpt = meetingSelect.options[meetingSelect.selectedIndex];

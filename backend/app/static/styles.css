@@ -144,6 +144,7 @@ button.small .icon { width: 15px; height: 15px; }
 }
 .iconBtn:hover { background: var(--surface-3); color: var(--text); }
 .iconBtn .icon { width: 18px; height: 18px; }
+.langBtn { font-size: 12px; font-weight: 700; letter-spacing: .5px; font-family: inherit; }
 html[data-theme="dark"] .iconMoon { display: none; }
 html[data-theme="light"] .iconSun { display: none; }
 a.btnLink:hover { background: var(--surface-2); color: var(--text); }
